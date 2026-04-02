@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sushil Shakya — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #1e1e2e;
+    --accent: #00e5c0;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --highlight: #00e5c0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s, backdrop-filter 0.3s;
+  }
+  nav.scrolled {
+    border-color: var(--border);
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* Hero */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.3s forwards;
+  }
+  .hero-name span { color: var(--accent); }
+  .hero-tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.5vw, 26px);
+    color: var(--muted);
+    margin-top: 20px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.45s forwards;
+  }
+  .hero-ctas {
+    display: flex; gap: 16px; margin-top: 40px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.6s forwards;
+  }
+  .btn-primary {
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #000;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,229,192,0.3);
+  }
+  .btn-ghost {
+    padding: 14px 28px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Hero right: terminal card */
+  .hero-terminal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: var(--surface);
+    padding: 12px 16px;
+    display: flex; gap: 8px; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .terminal-title {
+    font-size: 11px; color: var(--muted); margin-left: 8px; letter-spacing: 1px;
+  }
+  .terminal-body { padding: 24px; font-size: 12px; line-height: 2; }
+  .t-comment { color: var(--muted); }
+  .t-key { color: var(--accent3); }
+  .t-val { color: var(--accent); }
+  .t-str { color: var(--accent2); }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+
+  /* Sections */
+  section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 60px;
+  }
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 0 48px;
+    max-width: calc(1200px - 0px);
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about-text p { color: var(--muted); line-height: 1.9; margin-bottom: 16px; font-size: 14px; }
+  .about-text p strong { color: var(--text); }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .stat-box {
+    background: var(--card);
+    padding: 32px;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-top: 8px; text-transform: uppercase; }
+
+  /* Skills */
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .skill-category {
+    background: var(--card);
+    padding: 32px;
+    transition: background 0.2s;
+  }
+  .skill-category:hover { background: #1a1a26; }
+  .skill-cat-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+  .skill-cat-name span { color: var(--accent); }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .skill-category:hover .tag { border-color: rgba(0,229,192,0.2); color: var(--text); }
+
+  /* Experience Timeline */
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .timeline-item {
+    padding-left: 40px;
+    padding-bottom: 60px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot {
+    position: absolute;
+    left: -4px; top: 4px;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(0,229,192,0.6);
+  }
+  .timeline-date { font-size: 11px; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px; }
+  .timeline-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .timeline-company { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+  .timeline-bullets { list-style: none; }
+  .timeline-bullets li {
+    color: var(--muted);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+    font-size: 13px;
+  }
+  .timeline-bullets li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  /* Projects */
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
+  .project-card {
+    background: var(--card);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+  .project-card:hover { background: #1a1a26; }
+  .project-card:hover::after { transform: scaleX(1); }
+  .project-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -3px;
+    transition: color 0.3s;
+  }
+  .project-card:hover .project-num { color: rgba(0,229,192,0.15); }
+  .project-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+  .project-desc { color: var(--muted); font-size: 13px; line-height: 1.8; margin-bottom: 20px; }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tech-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    background: rgba(0,229,192,0.08);
+    border: 1px solid rgba(0,229,192,0.2);
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .project-link {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    padding-bottom: 2px;
+  }
+  .project-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Research */
+  .research-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 1px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: start;
+    transition: background 0.2s;
+  }
+  .research-card:hover { background: #1a1a26; }
+  .research-year {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    writing-mode: vertical-rl;
+    letter-spacing: 2px;
+  }
+  .research-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .research-meta { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+  .research-meta span { color: var(--accent); font-weight: 500; }
+  .research-desc { color: var(--muted); font-size: 13px; line-height: 1.8; }
+  .arxiv-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid rgba(167,139,250,0.4);
+    color: var(--accent3);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-top: 12px;
+    transition: background 0.2s;
+  }
+  .arxiv-badge:hover { background: rgba(167,139,250,0.1); }
+
+  /* Awards */
+  .awards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .award-card {
+    background: var(--card);
+    padding: 32px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .award-card::before {
+    content: '★';
+    position: absolute;
+    top: -10px; right: 16px;
+    font-size: 80px;
+    color: rgba(0,229,192,0.03);
+    font-family: 'Syne', sans-serif;
+    transition: color 0.3s;
+  }
+  .award-card:hover { background: #1a1a26; }
+  .award-card:hover::before { color: rgba(0,229,192,0.07); }
+  .award-icon { font-size: 20px; margin-bottom: 12px; }
+  .award-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .award-org { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
+
+  /* Certs */
+  .certs-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
+  .cert-item {
+    background: var(--card);
+    padding: 24px 32px;
+    display: flex; gap: 16px; align-items: center;
+    transition: background 0.2s;
+  }
+  .cert-item:hover { background: #1a1a26; }
+  .cert-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+  .cert-text { font-size: 13px; color: var(--text); }
+  .cert-issuer { font-size: 11px; color: var(--muted); }
+
+  /* Contact */
+  #contact { text-align: center; }
+  .contact-email {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 4px;
+    transition: color 0.2s;
+    display: inline-block;
+    margin: 24px 0 40px;
+  }
+  .contact-email:hover { color: var(--accent); }
+  .contact-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .contact-link {
+    padding: 12px 24px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Ambient glow */
+  .glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(120px);
+    opacity: 0.06;
+    z-index: 0;
+  }
+  .glow-1 { background: var(--accent); top: -200px; right: -200px; }
+  .glow-2 { background: var(--accent3); bottom: -200px; left: -200px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 60px 24px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .awards-grid { grid-template-columns: 1fr 1fr; }
+    .certs-list { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    #hero { padding: 100px 24px 60px; }
+  }
+  @media (max-width: 600px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    .awards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">SS/</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#awards">Awards</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <p class="hero-label">// Full-Stack · IT · Cybersecurity · Leadership</p>
+      <h1 class="hero-name">Sushil<br><span>Shakya</span></h1>
+      <p class="hero-tagline">Administrator, Developer &amp; Published Researcher</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Get in Touch</a>
+        <a href="#projects" class="btn-ghost">See Work</a>
+      </div>
+    </div>
+    <div class="hero-terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">sushil@portfolio ~ profile.json</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-comment">// profile</span></div>
+        <div><span class="t-key">name</span>: <span class="t-str">"Sushil Shakya"</span>,</div>
+        <div><span class="t-key">location</span>: <span class="t-str">"Sydney, Australia"</span>,</div>
+        <div><span class="t-key">role</span>: <span class="t-str">"IT Admin &amp; Developer"</span>,</div>
+        <div><span class="t-key">experience</span>: <span class="t-val">5</span><span class="t-comment"> // years</span>,</div>
+        <div><span class="t-key">publications</span>: <span class="t-val">2</span>,</div>
+        <div><span class="t-key">citations</span>: <span class="t-val">28</span>,</div>
+        <div><span class="t-key">hackathons_won</span>: <span class="t-val">3</span>,</div>
+        <div><span class="t-key">education</span>: <span class="t-str">"B.IT (VU)"</span>,</div>
+        <div><span class="t-key">status</span>: <span class="t-val">available</span> <span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">// 01. about</p>
+    <h2 class="section-title">Who I Am</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm a <strong>multidisciplinary technologist</strong> with 5+ years building the intersection of IT operations, customer success, and software development. From managing residential villages at WSU to publishing cybersecurity research on arXiv, I bring both technical depth and people-first leadership.</p>
+      <p>My background spans <strong>Tier 1–3 IT support</strong>, full-stack development, machine learning, network security, and operations management — always anchored in solving real problems for real humans.</p>
+      <p>I've led teams, managed EBITDA budgets, built AI-powered platforms, and published peer-reviewed research — all while maintaining a relentless focus on <strong>delivering value at every layer of an organisation.</strong></p>
+    </div>
+    <div class="reveal">
+      <div class="about-stats">
+        <div class="stat-box">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">2</div>
+          <div class="stat-label">arXiv Publications</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">28+</div>
+          <div class="stat-label">Research Citations</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Hackathon Wins</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal">
+    <p class="section-label">// 02. skills</p>
+    <h2 class="section-title">Technical Stack</h2>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> Cybersecurity</div>
+      <div class="skill-tags">
+        <span class="tag">Threat Detection</span><span class="tag">DDoS Detection</span><span class="tag">OWASP Top 10</span><span class="tag">Penetration Testing</span><span class="tag">IDS / IPS</span><span class="tag">Incident Response</span><span class="tag">Zero-Trust</span><span class="tag">SIEM</span><span class="tag">Metasploit</span><span class="tag">Wireshark</span>
+      </div>
+    </div>
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> Machine Learning</div>
+      <div class="skill-tags">
+        <span class="tag">Scikit-learn</span><span class="tag">TensorFlow</span><span class="tag">XGBoost</span><span class="tag">Random Forest</span><span class="tag">CNN / LSTM</span><span class="tag">NLP</span><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Predictive Analytics</span>
+      </div>
+    </div>
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> Programming</div>
+      <div class="skill-tags">
+        <span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">Java</span><span class="tag">C#</span><span class="tag">PHP</span><span class="tag">Swift</span><span class="tag">SQL</span><span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">R</span>
+      </div>
+    </div>
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> Cloud &amp; DevOps</div>
+      <div class="skill-tags">
+        <span class="tag">AWS</span><span class="tag">Azure</span><span class="tag">GCP</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Linux</span><span class="tag">CI/CD</span><span class="tag">VMware</span>
+      </div>
+    </div>
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> Networking</div>
+      <div class="skill-tags">
+        <span class="tag">TCP/IP</span><span class="tag">DNS / DHCP</span><span class="tag">VPN</span><span class="tag">IPv4/IPv6</span><span class="tag">LAN/WAN</span><span class="tag">Firewalls</span><span class="tag">CCNA</span>
+      </div>
+    </div>
+    <div class="skill-category">
+      <div class="skill-cat-name"><span>&#10022;</span> ITSM &amp; CRM</div>
+      <div class="skill-tags">
+        <span class="tag">Zendesk</span><span class="tag">StarRez</span><span class="tag">Salesforce</span><span class="tag">NetSuite</span><span class="tag">Asana</span><span class="tag">SLA Management</span><span class="tag">ITIL</span><span class="tag">RCA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <p class="section-label">// 03. experience</p>
+    <h2 class="section-title">Career Path</h2>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">FEB 2026 — PRESENT</div>
+      <div class="timeline-role">Customer Support Coordinator</div>
+      <div class="timeline-company">Unilodge – WSU Portfolio · Sydney, Australia</div>
+      <ul class="timeline-bullets">
+        <li>Front-line student support via phone, email and in person across check-in, check-out and room allocations</li>
+        <li>Contract management, onboarding documentation and arrears monitoring</li>
+        <li>Maintenance coordination, StarRez records management and resident event organisation</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">DEC 2024 — JUN 2025</div>
+      <div class="timeline-role">Administrator / Resident Contract Manager</div>
+      <div class="timeline-company">University of Sydney Village · Sydney, Australia</div>
+      <ul class="timeline-bullets">
+        <li>L1–L3 technical troubleshooting and de-escalation for students and staff</li>
+        <li>Budget planning, PNL auditing, purchase orders in NetSuite and cost-effective operations</li>
+        <li>Supervised receptionists, security, cleaners, contractors and community managers</li>
+        <li>Full accounts receivable lifecycle: credit/debit, transfers, bad debt, refund and adjustment reports</li>
+        <li>Health &amp; safety compliance audits in Protecht; Zendesk for ticketing, StarRez for data</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">JUL 2023 — JUL 2024</div>
+      <div class="timeline-role">Duty Manager / Community Manager</div>
+      <div class="timeline-company">Western Sydney University Villages · Sydney, Australia</div>
+      <ul class="timeline-bullets">
+        <li>EBITDA and budget management for village events; shift rostering for RA and CSA staff</li>
+        <li>Contract and policy updates ensuring Australian law compliance</li>
+        <li>Emergency coordinator: liaison with police, ambulance, Red Cross and health services</li>
+        <li>B2B relationship management with Red Bull, sampling companies and local restaurants</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">DEC 2022 — FEB 2023</div>
+      <div class="timeline-role">Customer Support</div>
+      <div class="timeline-company">Campus Living Villages – UNSW · Sydney, Australia</div>
+      <ul class="timeline-bullets">
+        <li>Multi-channel support via phone, email and live chat using Zendesk and StarRez</li>
+        <li>Technical troubleshooting and Office 365 escalation handling</li>
+        <li>Recipient of Employee Care Award 2025</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2020 — OCT 2021</div>
+      <div class="timeline-role">IT Support Officer · Sales &amp; Marketing · Customer Support</div>
+      <div class="timeline-company">M-power Accommodation &amp; World Blue · Sydney, Australia</div>
+      <ul class="timeline-bullets">
+        <li>Exceeded weekly KPIs for calls, chats, revenue and CSAT scores</li>
+        <li>Market analysis, sales trend reporting and social media content creation</li>
+        <li>Built customer relationships through transparent, proactive communication</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item" style="padding-bottom:0;">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">ADDITIONAL</div>
+      <div class="timeline-role">Lead Instructor · Retail Manager · Teacher</div>
+      <div class="timeline-company">Code Camp · Coles · Woolworths · Nepal</div>
+      <ul class="timeline-bullets">
+        <li>Lead Instructor at Code Camp — mentored hundreds of students in programming</li>
+        <li>Dry Goods Manager at Coles, Online Team Supervisor &amp; Bakery at Woolworths</li>
+        <li>Science Teacher and Insurance Agent (Nepal)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">// 04. projects</p>
+    <h2 class="section-title">Built Things</h2>
+  </div>
+  <div class="projects-grid reveal">
+    <div class="project-card">
+      <div class="project-num">01</div>
+      <div class="project-name">SAN Shield</div>
+      <div class="project-desc">AI-powered cybersecurity monitoring platform combining ML-based DDoS detection with automated OWASP vulnerability scanning. Achieves high accuracy across 5 classification models detecting SYN Flood, UDP Flood and HTTP Flood attacks.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">XGBoost</span><span class="tech-tag">Random Forest</span><span class="tech-tag">OWASP ZAP</span><span class="tech-tag">Chart.js</span>
+      </div>
+      <a href="https://san-shield.glitch.me" target="_blank" class="project-link">View Live →</a>
+    </div>
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-name">CampusMate</div>
+      <div class="project-desc">NLP-powered chatbot automating IT and student support query resolution. Implements intent classification and entity recognition to route security, IT, and admin queries — reducing manual ticket handling significantly.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Python</span><span class="tech-tag">NLP</span><span class="tech-tag">ML</span><span class="tech-tag">JavaScript</span><span class="tech-tag">HTML/CSS</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-name">ML Occupancy Forecasting</div>
+      <div class="project-desc">Predictive ML models for occupancy trend forecasting and anomaly detection across multi-site residential operations. Power BI dashboards for executive KPI reporting, A/B testing for service improvements.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Scikit-learn</span><span class="tech-tag">Pandas</span><span class="tech-tag">SQL</span><span class="tech-tag">Power BI</span><span class="tech-tag">Excel</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">04</div>
+      <div class="project-name">GovHack Projects</div>
+      <div class="project-desc">Dual winner at GovHack NSW 2022 — both mobile and web application categories. Built Dwell (group) and CycleMate (individual prototype) addressing real civic data challenges.</div>
+      <div class="project-tech">
+        <span class="tech-tag">Mobile Dev</span><span class="tech-tag">Web App</span><span class="tech-tag">Civic Data</span>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="https://hackerspace.govhack.org/projects/dwell" target="_blank" class="project-link">Dwell →</a>
+        <a href="https://hackerspace.govhack.org/projects/cyclemate" target="_blank" class="project-link">CycleMate →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="reveal">
+    <p class="section-label">// 05. research</p>
+    <h2 class="section-title">Publications</h2>
+  </div>
+  <div class="reveal">
+    <div class="research-card">
+      <div class="research-year">2025</div>
+      <div>
+        <div class="research-title">A Novel Zero-Touch, Zero-Trust AI/ML Enablement Framework for IoT Network Security</div>
+        <div class="research-meta">S. Shakya, R. Abbas, S. Maric · arXiv:2502.03614 · <span>10 citations</span></div>
+        <div class="research-desc">Proposed a Zero-Touch, Zero-Trust AI/ML security framework for IoT networks — eliminating manual configuration while enforcing continuous device authentication and real-time threat response. Designed an automated pipeline integrating anomaly detection, behavioural monitoring, policy enforcement and incident isolation.</div>
+        <a href="https://arxiv.org/abs/2502.03614" target="_blank" class="arxiv-badge">arXiv:2502.03614 ↗</a>
+      </div>
+    </div>
+    <div class="research-card">
+      <div class="research-year">2024</div>
+      <div>
+        <div class="research-title">A Comparative Analysis of Machine Learning Models for DDoS Detection in IoT Networks</div>
+        <div class="research-meta">S. Shakya, R. Abbas · arXiv:2411.05890 · <span>18 citations</span></div>
+        <div class="research-desc">Rigorous comparative evaluation of ML classifiers — Random Forest, XGBoost, CNN, LSTM, and Decision Trees — for detecting DDoS attacks in IoT environments. Benchmarked models across accuracy, precision, recall and F1 using real-world IoT traffic datasets; provided actionable recommendations for resource-constrained deployments.</div>
+        <a href="https://arxiv.org/abs/2411.05890" target="_blank" class="arxiv-badge">arXiv:2411.05890 ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="reveal">
+    <p class="section-label">// 06. awards</p>
+    <h2 class="section-title">Recognition</h2>
+  </div>
+  <div class="awards-grid reveal">
+    <div class="award-card">
+      <div class="award-icon">🏆</div>
+      <div class="award-title">Winner — Inaugural VU Hackathon</div>
+      <div class="award-org">Victoria University · 2024</div>
+    </div>
+    <div class="award-card">
+      <div class="award-icon">📱</div>
+      <div class="award-title">Winner — Mobile App Project</div>
+      <div class="award-org">GovHack NSW · 2022</div>
+    </div>
+    <div class="award-card">
+      <div class="award-icon">🌐</div>
+      <div class="award-title">Winner — Web App Project</div>
+      <div class="award-org">GovHack NSW · 2022</div>
+    </div>
+    <div class="award-card">
+      <div class="award-icon">❤️</div>
+      <div class="award-title">Employee Care Award</div>
+      <div class="award-org">Campus Living Villages · 2025</div>
+    </div>
+    <div class="award-card">
+      <div class="award-icon">📝</div>
+      <div class="award-title">Published Researcher</div>
+      <div class="award-org">2 arXiv Papers · 28+ Citations · 2024–2025</div>
+    </div>
+    <div class="award-card">
+      <div class="award-icon">✍️</div>
+      <div class="award-title">Published Technical Blog</div>
+      <div class="award-org">Predictive Analytics &amp; Machine Learning</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="reveal">
+    <p class="section-label">// 07. credentials</p>
+    <h2 class="section-title">Certifications &amp; Licences</h2>
+  </div>
+  <div class="certs-list reveal">
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Become a Data Analyst / Business Analyst</div><div class="cert-issuer">LinkedIn Learning</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Operations Management Professional Certificate</div><div class="cert-issuer">Jack Welch Management Institute</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Networking CCNA</div><div class="cert-issuer">Cisco</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Web Designer &amp; Networking</div><div class="cert-issuer">Aptech</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">NSW Assistant Real Estate Agent Licence</div><div class="cert-issuer">NSW Fair Trading</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Responsible Service of Alcohol (RSA)</div><div class="cert-issuer">NSW Government</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">First Aid / CPR / AED Provider</div><div class="cert-issuer">Certified Provider</div></div></div>
+    <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-text">Working with Children Check (WWCC)</div><div class="cert-issuer">NSW Government</div></div></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-label">// 08. contact</p>
+    <h2 class="section-title">Let's Connect</h2>
+    <p style="color:var(--muted);max-width:480px;margin:0 auto 8px;">Open to new opportunities in IT, operations, development, or cybersecurity. Based in Sydney, Australia.</p>
+    <a href="mailto:sushilsayshello@gmail.com" class="contact-email">sushilsayshello@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/sushilsayshello/" target="_blank" class="contact-link">LinkedIn ↗</a>
+      <a href="https://github.com/sushilsayshello" target="_blank" class="contact-link">GitHub ↗</a>
+      <a href="https://arxiv.org/search/?searchtype=author&query=Shakya" target="_blank" class="contact-link">arXiv ↗</a>
+      <a href="tel:+61401851971" class="contact-link">+61 401 851 971</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Sushil Shakya</span>
+  <span>Designed &amp; Built with purpose · Sydney, Australia</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animRing() { rx += (mx-rx)*0.12; ry += (my-ry)*0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); }
+  animRing();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.opacity = '0.2'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.5'; });
+  });
+
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal, .timeline-item');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
